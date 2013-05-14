@@ -186,9 +186,15 @@ function BuffParty(arg1,arg2)
 --    arg1 = Quickbar slot # for targetable, instant-cast buff without a cooldown (eg. Amp Attack) for range checking.
 --    arg2 = buff expiration time cutoff (in seconds) for refreshing buffs, default is 45 seconds.
 
+   local firstskill = GetSkillDetail(2,1)
+   if (g_skill[firstskill] == nil) or (g_skill[firstskill].page ~= 2) then
+       ReadSkills()
+	   if vocal then Msg("Skills were empty, re-read the skills..") end
+   end
+   
    local selfbuffs = { "Ruh Bağı", "Geliştirilmiş Zırh", "Holy Seal", "Magic Turmoil"}
    -- local groupbuffs = { "Yaşama Arzusu", "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Fire Ward", "Savage Blessing", "Concentration Prayer", "Shadow Fury"  }
-   local groupbuffs = { "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Vahşi Kutsama", "Konsantrasyon Duası", "Shadow Fury", "Yaşama Arzusu"  }
+   local groupbuffs = { "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Vahşi Kutsama", "Konsantrasyon Duası", "Shadow Fury", "Yaşama Arzusu", "Kutsal Koruma"  }
    local raidbuffs = { "Vahşi Kutsama", "Güçlendirilmiş Saldırı", "Kutsal Koruma"  }
 
    local buffrefresh = arg2 or 45           -- Refresh buff time (seconds)
@@ -218,26 +224,46 @@ function BuffParty(arg1,arg2)
 	   if (buff == "Yaşama Arzusu") then buffown = "Gelişmiş Yaşama Arzusu"; 
 	   elseif (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; end
        if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("player",buffown) <= buffrefresh) then
-           if vocal then Msg("- Casting "..buff.." on "..UnitName("player")) end
            TargetUnit("player")
-           CastSpellByName(buff)
-           return
+           if( buff == "Kutsal Koruma") then
+				local mainclass, sideclass = UnitClass("player");
+				if vocal then Msg("- Kutsal Koruma kendimize atılacakmı kontrol ediliyor. "..mainclass.." , "..sideclass) end
+				if ( not ((mainclass == "Şövalye") or (mainclass == "Gardiyan" and sideclass == "Savaşçı") or (mainclass == "Savaşçı" and sideclass == "Şövalye"))) then
+					if vocal then Msg("- Kutsal Koruma buffı atılıcak ve sınıflar uygun : "..UnitName("target")) end
+					CastSpellByName(buff)
+					return
+				end
+			else
+				if vocal then Msg("- Casting "..buff.." on "..UnitName("player")) end
+				CastSpellByName(buff)
+				return
+			end
        end
    end
 
    for num=1,GetNumPartyMembers()-1 do
        TargetUnit("party"..num)
        if GetActionUsable(arg1) and (UnitHealth("party"..num) > 0) then
-           if vocal then Msg("- Checking group buffs on "..UnitName("party"..num)) end
+           if vocal then Msg("- Checking group buffs2 on "..UnitName("party"..num)) end
 		   for i,buff in ipairs(groupbuffs) do
 				local buffown = buff;
 				if (buff == "Yaşama Arzusu") then buffown = "Gelişmiş Yaşama Arzusu";        
 				elseif (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; end
 			   if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("target",buffown) <= buffrefresh) then
                    if UnitIsUnit("target","party"..num) then
-                       if vocal then Msg("- Casting "..buff.." on "..UnitName("target")) end
-                       CastSpellByName(buff)
-                       return
+                       if( buff == "Kutsal Koruma") then 
+							local mainclass, sideclass = UnitClass("target");
+							if vocal then Msg("- Kutsal Koruma "..UnitName("target").." atılacakmı kontrol ediliyor. "..mainclass.." , "..sideclass) end
+							if ( not ((mainclass == "Şövalye") or (mainclass == "Gardiyan" and sideclass == "Savaşçı") or (mainclass == "Savaşçı" and sideclass == "Şövalye"))) then
+								if vocal then Msg("- Casting "..buff.." on "..UnitName("target")) end
+								CastSpellByName(buff)
+								return
+							end
+						else
+							if vocal then Msg("- Casting "..buff.." on "..UnitName("target")) end
+							CastSpellByName(buff)
+							return
+						end
                    else
                        if vocal then Msg("- Error: "..UnitName("target").." != "..UnitName("party"..num)) end
                    end
@@ -261,14 +287,20 @@ function BuffParty(arg1,arg2)
 					if (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; end 
 				   if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("target",buffown) <= buffrefresh) then
 					   if UnitIsUnit("target","raid"..num) then
-						   -- local mainclass, sideclass = UnitClass("target");
-						   -- if( buff == "Kutsal Koruma" and ((mainclass == "Şövalye") or (mainclass == "Gardiyan" and sideclass == "Savaşcı") or (mainclass == "Savaşcı" and sideclass == "Şövalye"))) then
-							-- PrintDebugMessage("Kutsal atmiyorum");
-							-- else
+						   
+						   if( buff == "Kutsal Koruma") then 
+								local mainclass, sideclass = UnitClass("target");
+								if vocal then Msg(UnitName("target").." MainClass = "..mainclass.." , SecondClass = "..sideclass) end
+								if ( not ((mainclass == "Şövalye") or (mainclass == "Gardiyan" and sideclass == "Savaşçı") or (mainclass == "Savaşçı" and sideclass == "Şövalye"))) then
+									if vocal then Msg("- Casting "..buff.." on "..UnitName("target")) end
+									CastSpellByName(buff)
+									return
+								end
+							else
 								if vocal then Msg("- Casting "..buff.." on "..UnitName("target")) end
 								CastSpellByName(buff)
 								return
-							-- end
+							end
 					   else
 						   if vocal then Msg("- Error: "..UnitName("target").." != "..unitName) end
 					   end
