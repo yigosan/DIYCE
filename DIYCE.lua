@@ -78,9 +78,12 @@ function BuffList(tgt)
        local timeRemaining = infocmd(tgt,i)
        if buff then
            -- Ad to list by name
-           list[buff:gsub("(%()(.)(%))", "%2")] = { stack = stackSize, time = timeRemaining, id = ID }
+           local buffname = buff:gsub("(%()(.)(%))", "%2");
+		   PrintDebugMessage("ADDING BUFF TO LIST : "..buffname);
+		   -- local buffname = tostring(buff);
+		   list[buffname] = { stack = stackSize, time = timeRemaining, id = ID }
            -- We also list by ID in case two different buffs/debuffs have the same name.
-           list[ID] = {stack = stackSize, time = timeRemaining, name = buff:gsub("(%()(.)(%))", "%2") }
+           list[ID] = {stack = stackSize, time = timeRemaining, name = buffname }
        else
            break
        end
