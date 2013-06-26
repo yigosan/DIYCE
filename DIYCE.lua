@@ -197,7 +197,7 @@ function BuffParty(arg1,arg2)
    
    local selfbuffs = { "Ruh Bağı", "Geliştirilmiş Zırh", "Holy Seal", "Magic Turmoil"}
    -- local groupbuffs = { "Yaşama Arzusu", "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Fire Ward", "Savage Blessing", "Concentration Prayer", "Shadow Fury"  }
-   local groupbuffs = { "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Vahşi Kutsama", "Konsantrasyon Duası", "Shadow Fury", "Yaşama Arzusu", "Kutsal Koruma"  }
+   local groupbuffs = { "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Vahşi Kutsama", "Konsantrasyon Duası", "Shadow Fury", "Yaşama Arzusu", "Kutsal Koruma", "Gizli Zarafet"  }
    local raidbuffs = { "Vahşi Kutsama", "Güçlendirilmiş Saldırı", "Kutsal Koruma"  }
 
    local buffrefresh = arg2 or 45           -- Refresh buff time (seconds)
@@ -225,7 +225,9 @@ function BuffParty(arg1,arg2)
    for i,buff in ipairs(groupbuffs) do
 	   local buffown = buff;
 	   if (buff == "Yaşama Arzusu") then buffown = "Gelişmiş Yaşama Arzusu"; 
-	   elseif (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; end
+	   elseif (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; 
+	   elseif (buff == "Gizli Zarafet") then buffown = "Gizemli Zarafet"; 
+	   end
        if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("player",buffown) <= buffrefresh) then
            TargetUnit("player")
            if( buff == "Kutsal Koruma") then
@@ -251,7 +253,9 @@ function BuffParty(arg1,arg2)
 		   for i,buff in ipairs(groupbuffs) do
 				local buffown = buff;
 				if (buff == "Yaşama Arzusu") then buffown = "Gelişmiş Yaşama Arzusu";        
-				elseif (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; end
+				elseif (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; 
+				elseif (buff == "Gizli Zarafet") then buffown = "Gizemli Zarafet";
+				end
 			   if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("target",buffown) <= buffrefresh) then
                    if UnitIsUnit("target","party"..num) then
                        if( buff == "Kutsal Koruma") then 
