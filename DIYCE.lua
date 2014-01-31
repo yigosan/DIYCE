@@ -79,7 +79,7 @@ function BuffList(tgt)
        if buff then
            -- Ad to list by name
            local buffname = buff:gsub("(%()(.)(%))", "%2");
-		   PrintDebugMessage("ADDING BUFF TO LIST : "..buffname);
+		   -- PrintDebugMessage("ADDING BUFF TO LIST : "..buffname);
 		   -- local buffname = tostring(buff);
 		   list[buffname] = { stack = stackSize, time = timeRemaining, id = ID }
            -- We also list by ID in case two different buffs/debuffs have the same name.
@@ -197,8 +197,8 @@ function BuffParty(arg1,arg2)
    
    local selfbuffs = { "Ruh Bağı", "Geliştirilmiş Zırh", "Holy Seal", "Magic Turmoil"}
    -- local groupbuffs = { "Yaşama Arzusu", "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Fire Ward", "Savage Blessing", "Concentration Prayer", "Shadow Fury"  }
-   local groupbuffs = { "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Vahşi Kutsama", "Konsantrasyon Duası", "Shadow Fury", "Yaşama Arzusu", "Kutsal Koruma", "Gizli Zarafet"  }
-   local raidbuffs = { "Vahşi Kutsama", "Güçlendirilmiş Saldırı", "Kutsal Koruma"  }
+   local groupbuffs = { "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Savage Blessing", "Concentration Prayer", "Shadow Fury", "Yaşama Arzusu", "Kutsal Koruma", "Gizli Zarafet"  }
+   local raidbuffs = { "Savage Blessing", "Güçlendirilmiş Saldırı", "Kutsal Koruma"  }
 
    local buffrefresh = arg2 or 45           -- Refresh buff time (seconds)
    local spell = UnitCastingTime("player")  -- Spell being cast?
@@ -225,7 +225,7 @@ function BuffParty(arg1,arg2)
    for i,buff in ipairs(groupbuffs) do
 	   local buffown = buff;
 	   if (buff == "Yaşama Arzusu") then buffown = "Gelişmiş Yaşama Arzusu"; 
-	   elseif (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; 
+	   elseif (buff == "Savage Blessing") then buffown = "Savage Blessing"; 
 	   elseif (buff == "Gizli Zarafet") then buffown = "Gizemli Zarafet"; 
 	   end
        if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("player",buffown) <= buffrefresh) then
@@ -233,7 +233,7 @@ function BuffParty(arg1,arg2)
            if( buff == "Kutsal Koruma") then
 				local mainclass, sideclass = UnitClass("player");
 				if vocal then Msg("- Kutsal Koruma kendimize atılacakmı kontrol ediliyor. "..mainclass.." , "..sideclass) end
-				if ( not ((mainclass == "Şövalye") or (mainclass == "Gardiyan" and sideclass == "Savaşçı") or (mainclass == "Savaşçı" and sideclass == "Şövalye"))) then
+				if ( not ((mainclass == "Knight") or (mainclass == "Warden" and sideclass == "Warrior") or (mainclass == "Warrior" and sideclass == "Knight"))) then
 					if vocal then Msg("- Kutsal Koruma buffı atılıcak ve sınıflar uygun : "..UnitName("target")) end
 					CastSpellByName(buff)
 					return
@@ -253,7 +253,7 @@ function BuffParty(arg1,arg2)
 		   for i,buff in ipairs(groupbuffs) do
 				local buffown = buff;
 				if (buff == "Yaşama Arzusu") then buffown = "Gelişmiş Yaşama Arzusu";        
-				elseif (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; 
+				elseif (buff == "Savage Blessing") then buffown = "Savage Blessing"; 
 				elseif (buff == "Gizli Zarafet") then buffown = "Gizemli Zarafet";
 				end
 			   if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("target",buffown) <= buffrefresh) then
@@ -261,7 +261,7 @@ function BuffParty(arg1,arg2)
                        if( buff == "Kutsal Koruma") then 
 							local mainclass, sideclass = UnitClass("target");
 							if vocal then Msg("- Kutsal Koruma "..UnitName("target").." atılacakmı kontrol ediliyor. "..mainclass.." , "..sideclass) end
-							if ( not ((mainclass == "Şövalye") or (mainclass == "Gardiyan" and sideclass == "Savaşçı") or (mainclass == "Savaşçı" and sideclass == "Şövalye"))) then
+							if ( not ((mainclass == "Knight") or (mainclass == "Warden" and sideclass == "Warrior") or (mainclass == "Warrior" and sideclass == "Knight"))) then
 								if vocal then Msg("- Casting "..buff.." on "..UnitName("target")) end
 								CastSpellByName(buff)
 								return
@@ -291,14 +291,14 @@ function BuffParty(arg1,arg2)
 			   if vocal then Msg("- Checking raid buffs on "..unitName) end
 			   for i,buff in ipairs(raidbuffs) do
 			   		local buffown = buff;
-					if (buff == "Vahşi Kutsama") then buffown = "Yabani Kutsama"; end 
+					if (buff == "Savage Blessing") then buffown = "Savage Blessing"; end 
 				   if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("target",buffown) <= buffrefresh) then
 					   if UnitIsUnit("target","raid"..num) then
 						   
 						   if( buff == "Kutsal Koruma") then 
 								local mainclass, sideclass = UnitClass("target");
 								if vocal then Msg(UnitName("target").." MainClass = "..mainclass.." , SecondClass = "..sideclass) end
-								if ( not ((mainclass == "Şövalye") or (mainclass == "Gardiyan" and sideclass == "Savaşçı") or (mainclass == "Savaşçı" and sideclass == "Şövalye"))) then
+								if ( not ((mainclass == "Knight") or (mainclass == "Warden" and sideclass == "Warrior") or (mainclass == "Warrior" and sideclass == "Knight"))) then
 									if vocal then Msg("- Casting "..buff.." on "..UnitName("target")) end
 									CastSpellByName(buff)
 									return
