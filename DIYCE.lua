@@ -197,7 +197,7 @@ function BuffParty(arg1,arg2)
    
    local selfbuffs = { "Ruh Bağı", "Geliştirilmiş Zırh", "Holy Seal", "Magic Turmoil"}
    -- local groupbuffs = { "Yaşama Arzusu", "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Fire Ward", "Savage Blessing", "Concentration Prayer", "Shadow Fury"  }
-   local groupbuffs = { "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Savage Blessing", "Concentration Prayer", "Shadow Fury", "Yaşama Arzusu", "Kutsal Koruma", "Gizli Zarafet"  }
+   local groupbuffs = { "Güçlendirilmiş Saldırı", "Angel's Blessing", "Essence of Magic", "Büyü Engeli", "Yağmurun Kutsaması", "Savage Blessing", "Concentration Prayer", "Shadow Fury", "Yaşama Arzusu", "Kutsal Koruma", "Mysterious Grace"  }
    local raidbuffs = { "Savage Blessing", "Güçlendirilmiş Saldırı", "Kutsal Koruma"  }
 
    local buffrefresh = arg2 or 45           -- Refresh buff time (seconds)
@@ -225,8 +225,8 @@ function BuffParty(arg1,arg2)
    for i,buff in ipairs(groupbuffs) do
 	   local buffown = buff;
 	   if (buff == "Yaşama Arzusu") then buffown = "Gelişmiş Yaşama Arzusu"; 
-	   elseif (buff == "Savage Blessing") then buffown = "Savage Blessing"; 
-	   elseif (buff == "Gizli Zarafet") then buffown = "Gizemli Zarafet"; 
+	   -- elseif (buff == "Savage Blessing") then buffown = "Savage Blessing"; 
+	   -- elseif (buff == "Mysterious Grace") then buffown = "Mysterious Grace"; 
 	   end
        if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("player",buffown) <= buffrefresh) then
            TargetUnit("player")
@@ -254,7 +254,7 @@ function BuffParty(arg1,arg2)
 				local buffown = buff;
 				if (buff == "Yaşama Arzusu") then buffown = "Gelişmiş Yaşama Arzusu";        
 				elseif (buff == "Savage Blessing") then buffown = "Savage Blessing"; 
-				elseif (buff == "Gizli Zarafet") then buffown = "Gizemli Zarafet";
+				elseif (buff == "Mysterious Grace") then buffown = "Mysterious Grace";
 				end
 			   if (g_skill[buff] ~= nil) and CD(buff) and (BuffTimeLeft("target",buffown) <= buffrefresh) then
                    if UnitIsUnit("target","party"..num) then
